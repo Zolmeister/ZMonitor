@@ -1,5 +1,68 @@
 <script src='/js/jquery.min.js'></script>
+<script src='/js/jquery.knob.js'></script>
 <script src='/js/jquery.flot.min.js'></script>
-<div id="cpu" style="width:600px;height: 100px"></div>
-<div id="net" style="width:600px;height: 100px"></div>
+<span class='top-button' onclick='exec("gnome-system-monitor")'>&#009881</span>
+<div class="top">
+    <h3>CPU</h3>
+    <div id="cpu" style="width:100%;height: 100px"></div>
+    <br>
+    <h3>Network</h3>
+    <div id="net" style="width:100%;height: 100px"></div>
+    <br>
+</div>
+<div>
+    <div class="data">
+        <h3>Memory</h3>
+        <h6>Used</h6>
+        <input type="text" data-thickness=".2" data-skin="tron" data-bgColor="#CCC" data-readOnly=true data-width="100" data-height="100" class="dial" id="memory">
+    </div>
+    <div class="data">
+        <h3>GPU</h3>
+        <div class='gpu'>
+            <h6>Load</h6>
+            <input type="text" data-thickness=".2" data-skin="tron" data-bgColor="#CCC" data-readOnly=true data-width="100" data-height="100" class="dial" id="gpuLoad">
+        </div>
+        <div class='gpu'>
+            <h6>Temp</h6>
+            <input type="text" data-thickness=".2" data-skin="tron" data-bgColor="#CCC" data-readOnly=true data-width="100" data-height="100" class="dial" id="gpuTemp">
+        </div>
+    </div>
+    <div class="data">
+        <h3>CPU</h3>
+        <h6>Temp</h6>
+        <input type="text" data-thickness=".2" data-skin="tron" data-bgColor="#CCC" data-readOnly=true data-width="100" data-height="100" class="dial" id="cpuTemp">
+    </div>
+</div>
+<script src='/js/util.js'></script>
+<script src='/js/config.js'></script>
 <script src='/js/main.js'></script>
+
+<style>
+    body {
+        background-color: #111;
+        color: #A9A9A9 !important;
+        font-family: ubuntu;
+    }
+    .yAxis {
+        font-size: 14px;
+    }
+    .data {
+        float: left;
+        margin: 10px 40px;
+    }
+    .gpu {
+        float: left;
+    }
+    h6 {
+        margin: 0px;
+    }
+    .tickLabel{
+        left: 0px;
+    }
+    .top-button{
+        position: absolute;
+        top: 0px;
+        right:10px;
+        cursor: pointer;
+    }
+</style>

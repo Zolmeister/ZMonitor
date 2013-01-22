@@ -3,6 +3,8 @@
 var appjs = require('appjs');
 var PSUtil = require('node-psutil').PSUtil;
 var fs = require('fs');
+var sys = require('sys')
+var exec = require('child_process').exec;
 // serve static files from a directory
 appjs.serveFilesFrom(__dirname + '/public');
 
@@ -12,8 +14,8 @@ appjs.router.get('/', function(request, response, next){
 })
 // create a window
 var window = appjs.createWindow({
-  width: 640,
-  height: 460,
+  width: 700,
+  height: 600,
   alpha: false,
 });
 
@@ -21,16 +23,17 @@ var window = appjs.createWindow({
 window.on('create', function(){
   console.log("Window Created");
   // window.frame controls the desktop window
-  window.frame.show().center();
+  window.frame.show()//.center();
 });
 
 // the window is ready when the DOM is loaded
 window.on('ready', function(){
   console.log("Window Ready");
   // directly interact with the DOM
-  window.process = process;
-  window.module = module;
+  //window.process = process;
+  //window.module = module;
   window.psutil = new PSUtil();
+  window.exec = exec;
   window.frame.openDevTools();
   window.addEventListener('keydown', function(e){
     // show chrome devtools on f12 or commmand+option+j

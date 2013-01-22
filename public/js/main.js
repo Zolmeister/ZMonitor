@@ -58,7 +58,7 @@ function updateCPU() {
         plotCPU.setData(data);
         plotCPU.draw();
 
-        setTimeout(updateCPU, 30)
+        setTimeout(updateCPU, 100)
     });
 }
 
@@ -68,7 +68,7 @@ function updateNet() {
         plotNet.setData(data);
         plotNet.draw();
 
-        setTimeout(updateNet, 30)
+        setTimeout(updateNet, 100)
     });
 }
 

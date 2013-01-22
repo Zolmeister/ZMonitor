@@ -1,5 +1,0 @@
-Node.js App.js System Monitor
-Tested on Linux, with ATI radeon HD 5870 graphics and AMD Zambezi 8 core cpu
-Launch: node --harmony app.js
-![ZMonitor](https://github.com/Zolmeister/ZMonitor/raw/master/ZMonitor.png)
-[![solarized dualmode](https://github.com/altercation/solarized/raw/master/img/solarized-yinyang.png)](#features)

@@ -34,7 +34,7 @@ window.on('ready', function(){
   //window.module = module;
   window.psutil = new PSUtil();
   window.exec = exec;
-  window.frame.openDevTools();
+  //window.frame.openDevTools();
   window.addEventListener('keydown', function(e){
     // show chrome devtools on f12 or commmand+option+j
     if (e.keyIdentifier === 'F12' || e.keyCode === 74 && e.metaKey && e.altKey) {

@@ -58,9 +58,8 @@ function updateCPU() {
         plotCPU.setData(data);
         plotCPU.draw();
 
-        //setTimeout(updateCPU, 30)
+        setTimeout(updateCPU, 30)
     });
-    setTimeout(updateCPU, 30)
 }
 
 function updateNet() {
@@ -69,9 +68,8 @@ function updateNet() {
         plotNet.setData(data);
         plotNet.draw();
 
-        //setTimeout(updateNet, 30)
+        setTimeout(updateNet, 30)
     });
-    setTimeout(updateNet, 30)
 }
 
 var firstMem = true
@@ -87,9 +85,8 @@ function updateMem() {
         } else {
             $("#memory").trigger('change')
         }
-        //setTimeout(updateMem, 5000)
+        setTimeout(updateMem, 5000)
     });
-    setTimeout(updateMem, 5000)
 }
 
 function updateGPU() {
@@ -100,9 +97,8 @@ function updateGPU() {
         var temp = parseFloat(stdout[1].split("-")[1].trim().split(" ")[0])
         $("#gpuLoad").val(load).trigger('change')
         $("#gpuTemp").val(temp).trigger('change')
-        //setTimeout(updateGPU, 5000)
+        setTimeout(updateGPU, 5000)
     })
-    setTimeout(updateGPU, 5000)
 }
 
 function updateCPUTemp() {
@@ -111,9 +107,8 @@ function updateCPUTemp() {
         stdout = stdout.split("\n")
         var temp = parseFloat(stdout[0].split("+")[1].split(" ")[0])
         $("#cpuTemp").val(temp).trigger('change')
-        //setTimeout(updateCPUTemp, 5000)
+        setTimeout(updateCPUTemp, 5000)
     })
-    setTimeout(updateCPUTemp, 5000)
 }
 
 var plotCPU = $.plot($("#cpu"), blankData(totalPoints), optionsCPU);
@@ -127,8 +122,8 @@ function start() {
     $("#cpuTemp").knob(knobConfig)
 
     if ( typeof psutil !== "undefined") {
-        //updateCPU();
-        //updateNet();
+        updateCPU();
+        updateNet();
         updateMem();
         updateGPU();
         updateCPUTemp();

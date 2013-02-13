@@ -52,86 +52,63 @@ function addNetData(obj) {
     return addX(netData);
 }
 
-function updateCPU() {
-    psutil.cpu_percent(0.05, true, function(err, res) {
-        var data = addCPUData(res)
-        plotCPU.setData(data);
-        plotCPU.draw();
+function updateCPU(res) {
+    var data = addCPUData(res)
+    plotCPU.setData(data);
+    plotCPU.draw();
 
-        setTimeout(updateCPU, 100)
-    });
 }
 
-function updateNet() {
-    psutil.network_io_counters(false, function(err, res) {
-        var data = addNetData(res)
-        plotNet.setData(data);
-        plotNet.draw();
+function updateNet(res) {
+    var data = addNetData(res)
+    plotNet.setData(data);
+    plotNet.draw();
 
-        setTimeout(updateNet, 100)
-    });
 }
 
 var firstMem = true
-function updateMem() {
-    psutil.virtual_memory(function(err, res) {
-        var used = bToGB(res.used - res.cached)
-        $("#memory").val(used)
-        if (firstMem) {
-            var total = bToGB(res.total)
-            knobConfig.max = total
-            $("#memory").knob(knobConfig)
-            firstMem = false
-        } else {
-            $("#memory").trigger('change')
-        }
-        setTimeout(updateMem, 5000)
-    });
+function updateMem(res) {
+    var used = bToGB(res.used - res.cached)
+    $("#memory").val(used)
+    if (firstMem) {
+        var total = bToGB(res.total)
+        knobConfig.max = total
+        $("#memory").knob(knobConfig)
+        firstMem = false
+    } else {
+        $("#memory").trigger('change')
+    }
 }
 
-function updateGPU() {
-    var cmd = "aticonfig --adapter=0 --od-getclocks --od-gettemperature --pplib-cmd \"get fanspeed 0\" | egrep 'GPU load|Fan Speed|Temperature' | gawk '{gsub(/^[ ]*/,\"\",$0) ; print}'"
-    exec(cmd, function(err, stdout, stderr) {
-        stdout = stdout.split("\n")
-        var load = parseInt(stdout[0].split(" ").pop())
-        var temp = parseFloat(stdout[1].split("-")[1].trim().split(" ")[0])
-        $("#gpuLoad").val(load).trigger('change')
-        $("#gpuTemp").val(temp).trigger('change')
-        setTimeout(updateGPU, 5000)
-    })
+function updateGPU(stdout) {
+    stdout = stdout.split("\n")
+    var load = parseInt(stdout[0].split(" ").pop())
+    var temp = parseFloat(stdout[1].split("-")[1].trim().split(" ")[0])
+    $("#gpuLoad").val(load).trigger('change')
+    $("#gpuTemp").val(temp).trigger('change')
 }
 
-function updateCPUTemp() {
-    var cmd = "sensors | grep temp1"
-    exec(cmd, function(err, stdout, stderr) {
-        stdout = stdout.split("\n")
-        var temp = parseFloat(stdout[0].split("+")[1].split(" ")[0])
-        $("#cpuTemp").val(temp).trigger('change')
-        setTimeout(updateCPUTemp, 5000)
-    })
+function updateCPUTemp(stdout) {
+    stdout = stdout.split("\n")
+    var temp = parseFloat(stdout[0].split("+")[1].split(" ")[0])
+    $("#cpuTemp").val(temp).trigger('change')
 }
 
 var plotCPU = $.plot($("#cpu"), blankData(totalPoints), optionsCPU);
 var plotNet = $.plot($("#net"), blankData(totalPoints), optionsNet);
-function start() {
+
+$(function() {
     knobConfig.max = 100
     $("#gpuLoad").knob(knobConfig)
     knobConfig.max = 90
     $("#gpuTemp").knob(knobConfig)
     knobConfig.max = 90
     $("#cpuTemp").knob(knobConfig)
-
-    if ( typeof psutil !== "undefined") {
-        updateCPU();
-        updateNet();
-        updateMem();
-        updateGPU();
-        updateCPUTemp();
-    } else {
-        setTimeout(start, 300);
-    }
-}
-
-$(function() {
-    start();
+    $("#memory").knob(knobConfig)
+    var socket = io.connect();
+    socket.on("cpu", updateCPU)
+    socket.on("net", updateNet)
+    socket.on("cpuTemp", updateCPUTemp)
+    socket.on("gpu", updateGPU)
+    socket.on("mem", updateMem)
 });

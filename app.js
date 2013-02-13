@@ -1,49 +1,96 @@
-// load appjs
-
-var appjs = require('appjs');
 var PSUtil = require('node-psutil').PSUtil;
+var psutil = new PSUtil()
 var fs = require('fs');
 var sys = require('sys')
 var exec = require('child_process').exec;
-// serve static files from a directory
-appjs.serveFilesFrom(__dirname + '/public');
+var express = require('express'), http = require('http'), path = require('path'), cons = require('consolidate');
 
-// handle requests from the browser
-appjs.router.get('/', function(request, response, next){
-  response.send(fs.readFileSync("index.html"));
+var app = express();
+var server = http.createServer(app);
+io = require('socket.io').listen(server);
+io.configure('development', function() {
+    io.set('log level', 1);
+});
+
+app.engine('dust', cons.dust);
+
+app.configure(function() {
+    app.set('port', process.env.PORT || 3000);
+    app.set('views', __dirname + '/views');
+    app.set('view engine', 'dust');
+    //dust.js default
+    app.set('view options', {
+        layout : false
+    });
+    //disable layout default
+    app.locals({
+        layout : false
+    });
+    app.use(express.logger('dev'));
+    app.use(express.bodyParser());
+    app.use(express.methodOverride());
+    app.use(app.router);
+    app.use(express.static(path.join(__dirname, 'public')));
 })
-// create a window
-var window = appjs.createWindow({
-  width: 700,
-  height: 600,
-  alpha: false,
+
+app.configure('development', function() {
+    app.use(express.errorHandler());
 });
 
-// prepare the window when first created
-window.on('create', function(){
-  console.log("Window Created");
-  // window.frame controls the desktop window
-  window.frame.show()//.center();
+app.get('/', function(req, res) {
+    res.sendfile('index.html')
 });
 
-// the window is ready when the DOM is loaded
-window.on('ready', function(){
-  console.log("Window Ready");
-  // directly interact with the DOM
-  //window.process = process;
-  //window.module = module;
-  window.psutil = new PSUtil();
-  window.exec = exec;
-  //window.frame.openDevTools();
-  window.addEventListener('keydown', function(e){
-    // show chrome devtools on f12 or commmand+option+j
-    if (e.keyIdentifier === 'F12' || e.keyCode === 74 && e.metaKey && e.altKey) {
-      window.frame.openDevTools();
+io.sockets.on('connection', function(socket) {
+    function updateCPU() {
+        psutil.cpu_percent(0.05, true, function(err, res) {
+            socket.emit("cpu", res)
+        });
     }
-  });
+
+    function updateNet() {
+        psutil.network_io_counters(false, function(err, res) {
+            socket.emit("net", res)
+        });
+    }
+
+    function updateMem() {
+        psutil.virtual_memory(function(err, res) {
+            socket.emit("mem", res)
+        });
+    }
+
+    function updateGPU() {
+        var cmd = "aticonfig --adapter=0 --od-getclocks --od-gettemperature --pplib-cmd \"get fanspeed 0\" | egrep 'GPU load|Fan Speed|Temperature' | gawk '{gsub(/^[ ]*/,\"\",$0) ; print}'"
+        exec(cmd, function(err, stdout, stderr) {
+            socket.emit("gpu", stdout)
+        })
+    }
+
+    function updateCPUTemp() {
+        var cmd = "sensors | grep temp1"
+        exec(cmd, function(err, stdout, stderr) {
+            socket.emit("cpuTemp", stdout)
+        })
+    }
+
+    var shortInterval = setInterval(function() {
+        updateCPU();
+        updateNet();
+    }, 100)
+
+    var longInterval = setInterval(function() {
+        updateMem();
+        updateGPU();
+        updateCPUTemp();
+    }, 5000)
+    
+    socket.on("disconnect", function() {
+        clearInterval(longInterval)
+        clearInterval(shortInterval)
+    })
 });
 
-// cleanup code when window is closed
-window.on('close', function(){
-  console.log("Window Closed");
+server.listen(app.get('port'), function() {
+    console.log("Express server listening on port " + app.get('port'));
 });

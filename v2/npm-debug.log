@@ -1,0 +1,54 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/home/zoli/.local/bin/node',
+1 verbose cli   '/home/zoli/.local/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   'node-psutil' ]
+2 info using npm@1.1.69
+3 info using node@v0.8.16
+4 verbose read json /home/zoli/workspace/ZMonitor/package.json
+5 verbose read json /home/zoli/workspace/ZMonitor/node_modules/node-psutil/package.json
+6 verbose read json /home/zoli/workspace/ZMonitor/node_modules/express/package.json
+7 verbose read json /home/zoli/workspace/ZMonitor/node_modules/appjs/package.json
+8 verbose read json /home/zoli/workspace/ZMonitor/node_modules/cpu-usage/package.json
+9 verbose read json /home/zoli/workspace/ZMonitor/node_modules/appjs-linux-x64/package.json
+10 verbose read json /home/zoli/workspace/ZMonitor/package.json
+11 verbose cache add [ 'node-psutil', null ]
+12 silly cache add name=undefined spec="node-psutil" args=["node-psutil",null]
+13 verbose parsed url { pathname: 'node-psutil',
+13 verbose parsed url   path: 'node-psutil',
+13 verbose parsed url   href: 'node-psutil' }
+14 silly lockFile 4627f514-node-psutil node-psutil
+15 verbose lock node-psutil /home/zoli/.npm/4627f514-node-psutil.lock
+16 silly lockFile 4627f514-node-psutil node-psutil
+17 verbose addNamed [ 'node-psutil', '' ]
+18 verbose addNamed [ null, '' ]
+19 silly lockFile 95cd84e9-node-psutil node-psutil@
+20 verbose lock node-psutil@ /home/zoli/.npm/95cd84e9-node-psutil.lock
+21 silly addNameRange { name: 'node-psutil', range: '', hasData: false }
+22 verbose url raw node-psutil
+23 verbose url resolving [ 'https://registry.npmjs.org/', './node-psutil' ]
+24 verbose url resolved https://registry.npmjs.org/node-psutil
+25 info trying registry request attempt 1 at 20:32:03
+26 http GET https://registry.npmjs.org/node-psutil
+27 http 404 https://registry.npmjs.org/node-psutil
+28 silly registry.get cb [ 404,
+28 silly registry.get   { server: 'CouchDB/1.2.1 (Erlang OTP/R15B)',
+28 silly registry.get     date: 'Wed, 13 Feb 2013 02:30:08 GMT',
+28 silly registry.get     'content-type': 'application/json',
+28 silly registry.get     'content-length': '52',
+28 silly registry.get     'cache-control': 'must-revalidate' } ]
+29 silly lockFile 95cd84e9-node-psutil node-psutil@
+30 error 404 'node-psutil' is not in the npm registry.
+30 error 404 You should bug the author to publish it
+30 error 404
+30 error 404 Maybe try 'npm search psutil'
+30 error 404
+30 error 404 Note that you can also install from a
+30 error 404 tarball, folder, or http url, or git url.
+31 error System Linux 3.2.0-35-generic
+32 error command "/home/zoli/.local/bin/node" "/home/zoli/.local/bin/npm" "install" "node-psutil"
+33 error cwd /home/zoli/workspace/ZMonitor/v2
+34 error node -v v0.8.16
+35 error npm -v 1.1.69
+36 error code E404
+37 verbose exit [ 1, true ]

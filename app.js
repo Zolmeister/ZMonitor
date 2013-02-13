@@ -3,7 +3,7 @@ var psutil = new PSUtil()
 var fs = require('fs');
 var sys = require('sys')
 var exec = require('child_process').exec;
-var express = require('express'), http = require('http'), path = require('path'), cons = require('consolidate');
+var express = require('express'), http = require('http'), path = require('path');
 
 var app = express();
 var server = http.createServer(app);
@@ -11,8 +11,6 @@ io = require('socket.io').listen(server);
 io.configure('development', function() {
     io.set('log level', 1);
 });
-
-app.engine('dust', cons.dust);
 
 app.configure(function() {
     app.set('port', process.env.PORT || 3000);
@@ -84,6 +82,10 @@ io.sockets.on('connection', function(socket) {
         updateGPU();
         updateCPUTemp();
     }, 5000)
+    
+    updateMem();
+    updateGPU();
+    updateCPUTemp();
     
     socket.on("disconnect", function() {
         clearInterval(longInterval)

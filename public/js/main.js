@@ -104,7 +104,6 @@ $(function() {
     $("#gpuTemp").knob(knobConfig)
     knobConfig.max = 90
     $("#cpuTemp").knob(knobConfig)
-    $("#memory").knob(knobConfig)
     var socket = io.connect();
     socket.on("cpu", updateCPU)
     socket.on("net", updateNet)

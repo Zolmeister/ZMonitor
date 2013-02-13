@@ -5,8 +5,8 @@ const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
 const Webkit = imports.gi.WebKit;
 
-const HelloGNOME = new Lang.Class ({
-    Name: 'Hello GNOME',
+const ZMonitor = new Lang.Class ({
+    Name: 'ZMonitor',
 
     // Create the application itself
     _init: function () {
@@ -33,7 +33,7 @@ const HelloGNOME = new Lang.Class ({
         // Create the application window
         this._window = new Gtk.ApplicationWindow  ({
             application: this.application,
-            title: "Welcome to GNOME",
+            title: "ZMonitor",
             default_height: 550,
             default_width: 720,
             window_position: Gtk.WindowPosition.CENTER });
@@ -54,5 +54,5 @@ const HelloGNOME = new Lang.Class ({
 });
 
 // Run the application
-let app = new HelloGNOME ();
+let app = new ZMonitor ();
 app.application.run (ARGV);

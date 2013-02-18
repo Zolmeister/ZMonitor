@@ -42,7 +42,7 @@ const ZMonitor = new Lang.Class ({
         this._webView = new Webkit.WebView ();
 
         // Put the web app into the webview
-        this._webView.load_uri ("http://localhost:3000");
+        this._webView.load_uri ("http://localhost:3003");
 
         // Put the webview into the window
         this._window.add (this._webView);

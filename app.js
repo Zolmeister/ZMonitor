@@ -13,7 +13,7 @@ io.configure('development', function() {
 });
 
 app.configure(function() {
-    app.set('port', process.env.PORT || 3000);
+    app.set('port', process.env.PORT || 3003);
     app.set('views', __dirname + '/views');
     app.set('view engine', 'dust');
     //dust.js default
@@ -59,8 +59,10 @@ io.sockets.on('connection', function(socket) {
     }
 
     function updateGPU() {
-        var cmd = "aticonfig --adapter=0 --od-getclocks --od-gettemperature --pplib-cmd \"get fanspeed 0\" | egrep 'GPU load|Fan Speed|Temperature' | gawk '{gsub(/^[ ]*/,\"\",$0) ; print}'"
+        var cmd = "DISPLAY=:0 /usr/bin/aticonfig --adapter=0 --od-getclocks --od-gettemperature --pplib-cmd \"get fanspeed 0\" | egrep 'GPU load|Fan Speed|Temperature' | gawk '{gsub(/^[ ]*/,\"\",$0) ; print}'"
         exec(cmd, function(err, stdout, stderr) {
+console.log(err)
+console.log(stderr)
             socket.emit("gpu", stdout)
         })
     }

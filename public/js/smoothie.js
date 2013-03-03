@@ -161,11 +161,8 @@ SmoothieChart.prototype.start = function() {
 };
 
 SmoothieChart.prototype.animate = function() {
-    function are(){
       this.frame = SmoothieChart.AnimateCompatibility.requestAnimationFrame(this.animate.bind(this));
       this.render(this.canvas, new Date().getTime() - (this.delay || 0));
-    }
-    setTimeout(are.bind(this), 1000/40)
 };
 
 SmoothieChart.prototype.stop = function() {

@@ -41,7 +41,7 @@ app.get('/', function(req, res) {
 
 io.sockets.on('connection', function(socket) {
     function updateCPU() {
-        psutil.cpu_percent(0.05, true, function(err, res) {
+        psutil.cpu_percent(0.5, true, function(err, res) {
             socket.emit("cpu", res)
         });
     }
@@ -77,7 +77,7 @@ console.log(stderr)
     var shortInterval = setInterval(function() {
         updateCPU();
         updateNet();
-    }, 100)
+    }, 500)
 
     var longInterval = setInterval(function() {
         updateMem();

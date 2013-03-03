@@ -2,68 +2,95 @@ var totalPoints = 600;
 var updateInterval = 40;
 
 // setup plot
-var optionsCPU = cpuConfig
-var optionsNet = netConfig
+var cpuSmooth = new SmoothieChart({
+  grid: { strokeStyle:'rgba(0, 0, 0,0)', fillStyle:'rgba(0, 0, 0,0)', },
+  labels: { fillStyle:'rgba(0, 0, 0,0)' },
+  maxValue:100,
+  minValue:0
+})
 
-var cpuData = [[]];
+cpuSmooth.streamTo($("#cpu-smooth")[0], 2000)
+var cpuCanv = $("#cpu-smooth")[0]
+cpuCanv.width = window.innerWidth
+cpuCanv.height = 100
 
-function addCPUData(list) {
-    if (cpuData[0].length > totalPoints) {
-        for (var i = 0; i < cpuData.length; i++)
-            cpuData[i].shift();
+var netSmooth = new SmoothieChart({
+  grid: { strokeStyle:'rgba(0, 0, 0,0)', fillStyle:'rgba(0, 0, 0,0)', }
+})
+netSmooth.streamTo($("#net-smooth")[0], 2000)
+var netCanv = $("#net-smooth")[0]
+netCanv.width = window.innerWidth
+netCanv.height = 100
+
+var cpuLines = []
+var cpuColors=[
+    [255,152,64],
+    [191,114,48],
+    [255,69,64],
+    [191,51,48],
+    [38,151,45],
+    [57,228,68],
+    [52,198,205],
+    [29,112,116]
+    
+]
+for(var i=0;i<8;i++){
+    var s = new TimeSeries()
+    cpuLines[i] = s
+    var c = cpuColors[i]
+    cpuSmooth.addTimeSeries(s, {
+        lineWidth: 1,
+        strokeStyle : 'rgb('+c[0]+','+c[1]+','+c[2]+')',
+        fillStyle : 'rgba('+c[0]+','+c[1]+','+c[2]+', .01)'
+    })
+}
+    
+function updateCPU(res) {
+    var time = new Date().getTime()
+    for(var i =0;i<res.length;i++){
+        cpuLines[i].append(time, res[i])
     }
-    for (var i = 0; i < list.length; i++) {
-        if (!cpuData[i]) {
-            cpuData[i] = [];
-        }
-        var smooth = smoothNum(cpuData[i], list[i], 5)
-        cpuData[i].push(smooth);
-
-    }
-    return addX(cpuData);
 }
 
-var netData = [[], []];
+var netLines = []
+var netColors=[
+    [255,152,64],
+    [29,112,116]
+]
+for(var i=0;i<2;i++){
+    var s = new TimeSeries()
+    netLines[i] = s
+    var c = netColors[i]
+    netSmooth.addTimeSeries(s, {
+        lineWidth: 1,
+        strokeStyle : 'rgb('+c[0]+','+c[1]+','+c[2]+')',
+        fillStyle : 'rgba('+c[0]+','+c[1]+','+c[2]+', .02)'
+    })
+}
+
 var prevUp = -1;
 var prevDown = -1;
 var prevTime = Date.now();
 
-function addNetData(obj) {
-    var time = Date.now();
-    if (netData[0].length > totalPoints) {
-        for (var i = 0; i < netData.length; i++)
-            netData[i].shift();
-    }
+function updateNet(res) {
+    var time = new Date().getTime()
+    
     if (prevUp == -1) {
-        prevUp = obj.bytes_sent;
-        prevDown = obj.bytes_recv;
+        prevUp = res.bytes_sent;
+        prevDown = res.bytes_recv;
     }
 
     var timeDiff = time - prevTime;
     prevTime = time;
 
-    var down = smoothNum(netData[0], bytesToSpeed(obj.bytes_recv, prevDown, timeDiff), 5)
-    netData[0].push(down);
-    var up = smoothNum(netData[1], bytesToSpeed(obj.bytes_sent, prevUp, timeDiff), 5)
-    netData[1].push(up);
+    var down = bytesToSpeed(res.bytes_recv, prevDown, timeDiff)
+    var up = bytesToSpeed(res.bytes_sent, prevUp, timeDiff)
 
-    prevUp = obj.bytes_sent;
-    prevDown = obj.bytes_recv;
-    return addX(netData);
-}
-
-function updateCPU(res) {
-    var data = addCPUData(res)
-    plotCPU.setData(data);
-    plotCPU.draw();
-
-}
-
-function updateNet(res) {
-    var data = addNetData(res)
-    plotNet.setData(data);
-    plotNet.draw();
-
+    prevUp = res.bytes_sent;
+    prevDown = res.bytes_recv;
+    
+    netLines[0].append(time, down)
+    netLines[1].append(time, up)
 }
 
 var firstMem = true
@@ -94,8 +121,6 @@ function updateCPUTemp(stdout) {
     $("#cpuTemp").val(temp).trigger('change')
 }
 
-var plotCPU = $.plot($("#cpu"), blankData(totalPoints), optionsCPU);
-var plotNet = $.plot($("#net"), blankData(totalPoints), optionsNet);
 
 $(function() {
     knobConfig.max = 100

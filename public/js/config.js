@@ -40,37 +40,3 @@ var knobConfig = {
         }
     }
 }
-
-var netConfig = {
-    series : {
-        shadowSize : 0
-    }, // drawing is faster without shadows
-    yaxis : {
-        min : 0,
-        max : 2000
-    },
-    xaxis : {
-        show : false
-    },
-    grid : {
-        backgroundColor : "#CCC"
-    }
-};
-var cpuConfig = {
-    series : {
-        shadowSize : 0,
-        lines : {
-            lineWidth : 1
-        }
-    }, // drawing is faster without shadows
-    yaxis : {
-        min : 0,
-        max : 100,
-    },
-    xaxis : {
-        show : false
-    },
-    grid : {
-        backgroundColor : "#CCC"
-    }
-}; 

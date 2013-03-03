@@ -2,12 +2,15 @@
 <script src='/js/jquery.min.js'></script>
 <script src='/js/jquery.knob.js'></script>
 <script src='/js/jquery.flot.min.js'></script>
+<script src='/js/smoothie.js'></script>
 <div class="top">
     <h3>CPU</h3>
-    <div id="cpu" style="width:100%;height: 100px"></div>
+    <!--<div id="cpu" style="width:100%;height: 100px"></div>-->
+    <canvas id="cpu-smooth" style="margin-left:-8px"></canvas>
     <br>
     <h3>Network</h3>
-    <div id="net" style="width:100%;height: 100px"></div>
+    <!--<div id="net" style="width:100%;height: 100px"></div>-->
+    <canvas id="net-smooth" style="margin-left:-8px"></canvas>
     <br>
 </div>
 <div>
